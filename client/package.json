@@ -1,0 +1,60 @@
+{
+  "name": "admin-solo-project",
+  "version": "1.9.0",
+  "description": "",
+  "private": false,
+  "main": "dist/index.js",
+  "dependencies": {
+    "@material-ui/core": "4.11.1",
+    "@material-ui/data-grid": "^4.0.0-alpha.22",
+    "@material-ui/icons": "4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@unicef/material-ui-currency-textfield": "^0.8.6",
+    "axios": "^0.21.1",
+    "chartist": "0.10.1",
+    "classnames": "2.2.6",
+    "history": "4.10.1",
+    "moment": "^2.29.1",
+    "prop-types": "15.7.2",
+    "react": "16.13.1",
+    "react-audio-player": "^0.16.1",
+    "react-chartist": "0.14.3",
+    "react-dom": "16.13.1",
+    "react-images-upload": "^1.2.8",
+    "react-router-dom": "5.2.0",
+    "react-scripts": "3.4.1",
+    "react-toastify": "^7.0.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "keywords": [],
+  "author": "Santiago Vásquez",
+  "license": "MIT",
+  "optionalDependencies": {
+    "@types/googlemaps": "3.39.6",
+    "@types/markerclustererplus": "2.1.33",
+    "ajv": "6.12.2",
+    "typescript": "3.9.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-prettier": "3.1.3",
+    "eslint-plugin-react": "^7.23.1",
+    "gulp": "4.0.2",
+    "gulp-append-prepend": "1.0.8",
+    "prettier": "2.0.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": []
+  }
+}

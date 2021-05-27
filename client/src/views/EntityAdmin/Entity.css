@@ -1,0 +1,50 @@
+.makeStyles-itemLink-16 {
+  margin: 0 !important;
+}
+
+.width-250 {
+  width: 250px;
+}
+
+.custom-field-form {
+  display: block;
+  width: 100%;
+}
+
+.custom-field-form:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+h6 {
+  margin-block-start: 0.5em;
+  margin-block-end: 0.5em;
+}
+
+.chat-icon {
+  height: 57px;
+  width: 57px;
+  position: absolute;
+  cursor: pointer;
+  margin-left: 75vw;
+  margin-top: 90vh;
+  z-index: 10;
+}
+
+.view-results {
+  background-color: #ff8328;
+  font-weight: bold;
+  color: white;
+  padding: 1em 1.5em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.view-results:hover {
+  color: white;
+  opacity: 0.8;
+}
+
+.a-container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+}
