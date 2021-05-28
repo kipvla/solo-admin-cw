@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
-import axios from 'axios'
-import GridContainer from 'components/defaultComponents/Grid/GridContainer'
-import GridItem from 'components/defaultComponents/Grid/GridItem'
-import { Card } from '@material-ui/core'
-import Show from './Show'
-import Edit from './Edit'
-import { URL } from '../../assets/constants/url'
+import React, {useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import GridContainer from 'components/defaultComponents/Grid/GridContainer';
+import GridItem from 'components/defaultComponents/Grid/GridItem';
+import {Card} from '@material-ui/core';
+import Show from './Show';
+import Edit from './Edit';
+import {URL} from '../../assets/constants/url';
 
 export default function IdOperationEntityAdmin(props) {
-  const { operation, id, query } = props.match.params
+  const {operation, id, query} = props.match.params;
 
-  const [data, setData] = useState(null)
+  const [data, setData] = useState(null);
 
   const getInformation = async () => {
     try {
@@ -19,37 +19,40 @@ export default function IdOperationEntityAdmin(props) {
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      };
       const res = await axios.get(
         `${URL}/api/${query.replaceAll('-', '/')}/${id}`,
         config,
-      )
-      setData(res.data)
+      );
+      setData(res.data);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   useEffect(() => {
-    getInformation()
-  }, [])
+    getInformation();
+  }, []);
 
   const getOperation = () => {
-    switch (operation) {
-      case 'show':
-        return <Show data={data} />
-      case 'edit':
+    const operations = {
+      show: function () {
+        return <Show data={data} />;
+      },
+      edit: function () {
         return (
           <Edit
             {...props}
             dataEdit={data}
             queryEdit={`test/${data.entityName}/edit/${id}`}
           />
-        )
-      default:
-        return null
-    }
-  }
+        );
+      },
+    };
+    if (typeof operations[operation] !== 'function')
+      throw new Error('Invalid type');
+    return operations[operation]();
+  };
 
   return (
     <GridContainer>
@@ -59,9 +62,9 @@ export default function IdOperationEntityAdmin(props) {
         </Card>
       </GridItem>
     </GridContainer>
-  )
+  );
 }
 
 IdOperationEntityAdmin.propTypes = {
   match: PropTypes.any,
-}
+};

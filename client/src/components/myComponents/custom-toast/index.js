@@ -1,15 +1,14 @@
-import React from 'react'
-import ReactAudioPlayer from 'react-audio-player'
-import Fuzz from '../../../assets/img/Fuzz.png'
-function CustomToast({ title, body, image, textStyle, audioSrc }) {
+import React from 'react';
+import ReactAudioPlayer from 'react-audio-player';
+import Fuzz from '../../../assets/img/Fuzz.png';
+function CustomToast({title, body, image, textStyle, audioSrc}) {
   return (
     <div
       style={{
         display: 'flex',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-      }}
-    >
+      }}>
       <ReactAudioPlayer
         src={
           audioSrc ||
@@ -18,15 +17,15 @@ function CustomToast({ title, body, image, textStyle, audioSrc }) {
         autoPlay={true}
         controls={true}
         loop={audioSrc && true}
-        style={{ display: 'none' }}
+        style={{display: 'none'}}
       />
 
       <img height={50} width={70} src={image || Fuzz} alt="" />
-      <div style={{ textAlign: 'center', marginLeft: '10px' }}>
-        <h4 style={{ color: 'red', ...textStyle }}>{title}</h4>
-        <p style={{ color: 'black', ...textStyle }}>{body}</p>
+      <div style={{textAlign: 'center', marginLeft: '10px'}}>
+        <h4 style={{color: 'red', ...textStyle}}>{title}</h4>
+        <p style={{color: 'black', ...textStyle}}>{body}</p>
       </div>
     </div>
-  )
+  );
 }
-export default CustomToast
+export default CustomToast;

@@ -1,44 +1,44 @@
-import React, { useState } from 'react'
-import classNames from 'classnames'
-import PropTypes from 'prop-types'
-import { NavLink } from 'react-router-dom'
+import React, {useState} from 'react';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import {NavLink} from 'react-router-dom';
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import Drawer from '@material-ui/core/Drawer'
-import Hidden from '@material-ui/core/Hidden'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import styles from '../../../assets/jss/material-dashboard-react/components/sidebarStyle.js'
-import ListItemText from '@material-ui/core/ListItemText'
-import AdminNavbarLinks from '../Navbars/AdminNavbarLinks.js'
-import { Collapse } from '@material-ui/core'
+import {makeStyles} from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import styles from '../../../assets/jss/material-dashboard-react/components/sidebarStyle.js';
+import ListItemText from '@material-ui/core/ListItemText';
+import AdminNavbarLinks from '../Navbars/AdminNavbarLinks.js';
+import {Collapse} from '@material-ui/core';
 import {
   ExpandLess,
   ExpandMore,
   Dashboard,
   List as ListIcon,
-} from '@material-ui/icons'
+} from '@material-ui/icons';
 
-const useStyles = makeStyles(styles)
+const useStyles = makeStyles(styles);
 
 export default function Sidebar(props) {
-  const classes = useStyles()
-  const { color, image } = props
-  const [openCollapse, setOpenCollapse] = useState('')
+  const classes = useStyles();
+  const {color, image} = props;
+  const [openCollapse, setOpenCollapse] = useState('');
 
   function activeRoute(routeName) {
-    return window.location.pathname === routeName ? true : false
+    return window.location.pathname === routeName ? true : false;
   }
 
   const CustomLink = (path, name, CustomIcon) => {
     const listItemClasses = classNames({
       [' ' + classes[color]]: activeRoute(path),
-    })
+    });
 
     const whiteFontClasses = classNames({
       [' ' + classes.whiteFont]: activeRoute(path),
-    })
+    });
 
     return (
       <NavLink to={path} className={classes.item} activeClassName="active">
@@ -53,8 +53,8 @@ export default function Sidebar(props) {
           />
         </ListItem>
       </NavLink>
-    )
-  }
+    );
+  };
 
   function CustomMainLink(props) {
     return (
@@ -62,23 +62,22 @@ export default function Sidebar(props) {
         button
         onClick={() =>
           setOpenCollapse(props.clue === openCollapse ? '' : props.clue)
-        }
-      >
-        <ListItemText style={{ color: 'white' }} primary={props.label} />
+        }>
+        <ListItemText style={{color: 'white'}} primary={props.label} />
         {openCollapse === props.clue ? (
-          <ExpandLess style={{ color: 'white' }} />
+          <ExpandLess style={{color: 'white'}} />
         ) : (
-          <ExpandMore style={{ color: 'white' }} />
+          <ExpandMore style={{color: 'white'}} />
         )}
       </ListItem>
-    )
+    );
   }
 
   const Links = (
     <List className={classes.list}>
       {CustomLink('/dashboard', 'Dashboard', Dashboard)}
       <hr />
-      <h6 style={{ color: 'white', marginLeft: '15px', marginTop: '15px' }}>
+      <h6 style={{color: 'white', marginLeft: '15px', marginTop: '15px'}}>
         <b>ADMINISTRATION</b>
       </h6>
       <CustomMainLink clue="clients" label="Clients" />
@@ -87,9 +86,8 @@ export default function Sidebar(props) {
           {CustomLink('/admin/clients', 'List', ListIcon)}
         </List>
       </Collapse>
-  
     </List>
-  )
+  );
 
   return (
     <div>
@@ -104,8 +102,7 @@ export default function Sidebar(props) {
           onClose={props.handleDrawerToggle}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
-          }}
-        >
+          }}>
           <div className={classes.sidebarWrapper}>
             <AdminNavbarLinks />
             {Links}
@@ -113,7 +110,7 @@ export default function Sidebar(props) {
           {image !== undefined ? (
             <div
               className={classes.background}
-              style={{ backgroundImage: 'url(' + image + ')' }}
+              style={{backgroundImage: 'url(' + image + ')'}}
             />
           ) : null}
         </Drawer>
@@ -125,19 +122,18 @@ export default function Sidebar(props) {
           open
           classes={{
             paper: classNames(classes.drawerPaper),
-          }}
-        >
+          }}>
           <div className={classes.sidebarWrapper}>{Links}</div>
           {image !== undefined ? (
             <div
               className={classes.background}
-              style={{ backgroundImage: 'url(' + image + ')' }}
+              style={{backgroundImage: 'url(' + image + ')'}}
             />
           ) : null}
         </Drawer>
       </Hidden>
     </div>
-  )
+  );
 }
 
 Sidebar.propTypes = {
@@ -149,4 +145,4 @@ Sidebar.propTypes = {
   clue: PropTypes.string,
   label: PropTypes.string,
   color: PropTypes.string,
-}
+};

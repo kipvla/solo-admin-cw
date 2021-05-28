@@ -1,0 +1,21 @@
+{
+  "env": {
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": "react-app",
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "rules": {
+    "indent": ["error", 2],
+    "keyword-spacing": "error",
+    "linebreak-style": "error",
+    "quotes": ["error", "single"],
+    "semi": "error",
+    "space-before-blocks": "error",
+    "no-undef": "off",
+    "no-unused-vars": "off"
+  }
+}
