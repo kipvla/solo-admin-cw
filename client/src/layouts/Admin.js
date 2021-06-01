@@ -43,15 +43,17 @@ export default function Admin({...rest}) {
 
   const updateUserInfo = async () => {
     // UPDATE USER INFO LOGIC...
+    // No need to update for now, we are only going to use his jwt to access user info...
+    // We need to make extra security check that in fact it's an admin's jwt and not a client
   };
 
   useEffect(() => {
-    if (localStorage.getItem('session_token')) {
+    if (localStorage.getItem('session')) {
       updateUserInfo();
     }
   }, []);
 
-  if (localStorage.getItem('session_token')) {
+  if (!localStorage.getItem('session')) {
     return <Auth />;
   }
 

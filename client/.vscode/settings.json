@@ -1,7 +1,0 @@
-{
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "SimonSiefke.prettier-vscode",
-  "prettier.semi": true,
-  "emmet.triggerExpansionOnTab": true,
-  "files.eol": "\r\n"
-}

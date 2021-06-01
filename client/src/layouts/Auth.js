@@ -7,6 +7,9 @@ import {
   Paper,
   TextField,
 } from '@material-ui/core';
+import AuthService from '../services/auth.ts';
+import CustomToast from '../components/myComponents/custom-toast/index';
+import {toast} from 'react-toastify';
 
 export default function Auth() {
   const [email, setEmail] = useState('');
@@ -14,7 +17,18 @@ export default function Auth() {
 
   const handleLogin = async () => {
     // handle login logic...
-    console.log('handling');
+    const {serverRes, error} = await AuthService.handleLogin(
+      email.trim().toLowerCase(),
+      password,
+    );
+    if (error) {
+      toast(<CustomToast title={serverRes} />);
+    } else {
+      //not safe
+      localStorage.setItem('session', serverRes.data.token);
+      window.location.reload();
+    }
+
   };
 
   return (
