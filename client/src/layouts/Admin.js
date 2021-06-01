@@ -13,6 +13,10 @@ import EntityOperationIdAdmin from '../views/EntityAdmin/EntityOperationIdAdmin'
 import ClientList from '../views/Clients/ListClients';
 import CourseList from '../views/Courses/ListCourses';
 import AddCourse from '../views/Courses/AddCourses';
+import AddTopics from '../views/Topics/AddTopics';
+import EditTopics from '../views/Topics/EditTopics';
+import TopicsList from '../views/Topics/ListTopics';
+import ShowTopics from '../views/Topics/ShowTopics';
 
 import Auth from './Auth';
 
@@ -80,6 +84,26 @@ export default function Admin({...rest}) {
               <Route
                 path="/admin/course/:operation"
                 component={AddCourse}
+                exact
+              />
+              <Route
+                path="/admin/topic/:operation"
+                component={AddTopics}
+                exact
+              />
+              <Route
+                path="/admin/topics"
+                component={TopicsList}
+                exact
+              />
+              <Route
+                path="/admin/edit/topics/:id"
+                component={EditTopics}
+                exact
+              />
+              <Route
+                path="/admin/show/topics/:id"
+                component={ShowTopics}
                 exact
               />
               <Route

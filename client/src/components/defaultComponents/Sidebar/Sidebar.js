@@ -95,6 +95,14 @@ export default function Sidebar(props) {
           {CustomLink('/admin/course/add', 'Creat Course', Add)}
         </List>
       </Collapse>
+
+      <CustomMainLink clue="topics" label="Topics" />
+      <Collapse in={openCollapse === 'topics'} timeout="auto" unmountOnExit>
+        <List className={classes.list}>
+          {CustomLink('/admin/topics', 'List', ListIcon)}
+          {CustomLink('/admin/topics/add', 'Creat Course', Add)}
+        </List>
+      </Collapse>
     </List>
   );
 
