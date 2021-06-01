@@ -1,11 +1,11 @@
-import React from 'react'
-import EntityOperationAdmin from '../EntityAdmin/EntityOperationAdmin'
+import React from 'react';
+import EntityOperationAdmin from '../EntityAdmin/EntityOperationAdmin';
 
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 export default function AddGrades(props) {
-  const { operation } = props.match.params
-  const entityID = JSON.parse(localStorage.getItem('entity'))._id
+  const { operation } = props.match.params;
+  const entityID = JSON.parse(localStorage.getItem('entity'))._id;
   return (
     <div>
       <EntityOperationAdmin
@@ -17,9 +17,9 @@ export default function AddGrades(props) {
         entity={'grade'}
       />
     </div>
-  )
+  );
 }
 
 AddGrades.propTypes = {
   match: PropTypes.any,
-}
+};

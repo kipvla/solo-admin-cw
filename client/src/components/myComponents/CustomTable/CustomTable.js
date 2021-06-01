@@ -22,13 +22,14 @@ import {URL} from '../../../assets/constants/url';
 import CustomToast from '../custom-toast';
 import {toast} from 'react-toastify';
 
+
 export default function CustomTable({
   tableName,
   query,
   queryByID,
   deleteQuery,
 }) {
-  const userID = JSON.parse(localStorage.getItem('user'))._id;
+  
   const [data, setData] = useState({});
   const [isDeleteModal, setIsDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(0);
@@ -37,12 +38,15 @@ export default function CustomTable({
 
   const getInfoFromDB = async () => {
     try {
-      const config = {
+      const jwt = localStorage.getItem('session');
+      const authConfig = {
         headers: {
+          Authorization: `Bearer ${jwt}`,
           'Content-Type': 'application/json',
         },
       };
-      const res = await axios.get(`${URL}/api/${query}`, config);
+      const res = await axios.get(`${URL}/${query}`, authConfig);
+      console.log(res, 'info from db');
       setIsLoading(false);
       setData(res.data);
     } catch (err) {
@@ -67,33 +71,34 @@ export default function CustomTable({
 
   useEffect(() => {
     getInfoFromDB();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const deleteData = async id => {
-    try {
-      const config = {
-        headers: {
-          'content-type': 'application/json',
-        },
-      };
-      const dataToSend = {
-        userID,
-      };
-      const body = JSON.stringify(dataToSend);
-      const res = await axios.post(
-        `${URL}/api/${deleteQuery}/${id}`,
-        body,
-        config,
-      );
-      toast(<CustomToast title={res.data} />);
-      setIsDeleteModal(false);
-      setIdToDelete(0);
-      window.location.reload();
-      // hideProgressDialog();
-    } catch (e) {
-      // hideProgressDialog();
-      console.log(e);
-    }
+    // try {
+    //   const config = {
+    //     headers: {
+    //       'content-type': 'application/json',
+    //     },
+    //   };
+    //   const dataToSend = {
+    //     userID,
+    //   };
+    //   const body = JSON.stringify(dataToSend);
+    //   const res = await axios.post(
+    //     `${URL}/api/${deleteQuery}/${id}`,
+    //     body,
+    //     config,
+    //   );
+    //   toast(<CustomToast title={res.data} />);
+    //   setIsDeleteModal(false);
+    //   setIdToDelete(0);
+    //   window.location.reload();
+    //   // hideProgressDialog();
+    // } catch (e) {
+    //   // hideProgressDialog();
+    //   console.log(e);
+    // }
   };
 
   const Options = params => {

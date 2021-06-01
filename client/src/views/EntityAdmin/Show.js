@@ -50,7 +50,7 @@ export default function Show(props) {
 
   return (
     <Container>
-      <h4>Detalle {data.categoryName} </h4>
+      <h4>{data.categoryName} detail</h4>
       <TableContainer component={Paper}>
         <Table>
           <TableBody>

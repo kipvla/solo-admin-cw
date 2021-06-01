@@ -9,6 +9,7 @@ import styles from 'assets/jss/material-dashboard-react/layouts/adminStyle.js';
 import bgImage from 'assets/img/sidebar-4.jpg';
 
 import DashboardPage from '../views/Dashboard/Dashboard.js';
+import EntityOperationIdAdmin from '../views/EntityAdmin/EntityOperationIdAdmin';
 import GradeList from '../views/Grades/ListGrades';
 import AddGrades from '../views/Grades/AddGrades';
 
@@ -77,6 +78,11 @@ export default function Admin({...rest}) {
               <Route
                 path="/admin/clients/:operation"
                 component={AddGrades}
+                exact
+              />
+              <Route
+                path="/admin/:operation/:id/:query"
+                component={EntityOperationIdAdmin}
                 exact
               />
             </Switch>

@@ -15,23 +15,31 @@ export default function IdOperationEntityAdmin(props) {
 
   const getInformation = async () => {
     try {
-      const config = {
+      const jwt = localStorage.getItem('session');
+      const authConfig = {
         headers: {
+          Authorization: `Bearer ${jwt}`,
           'Content-Type': 'application/json',
         },
       };
       const res = await axios.get(
-        `${URL}/api/${query.replaceAll('-', '/')}/${id}`,
-        config,
+        `${URL}/${query.replaceAll('-', '/')}/${id}`,
+        authConfig,
       );
       setData(res.data);
     } catch (err) {
-      console.log(err);
+      console.log(err.response);
+      if (err.response.status === 401) {
+        localStorage.removeItem('session');
+        window.location.href = '/';
+      }
+    
     }
   };
 
   useEffect(() => {
     getInformation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getOperation = () => {
