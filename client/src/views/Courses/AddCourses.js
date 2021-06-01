@@ -3,23 +3,22 @@ import EntityOperationAdmin from '../EntityAdmin/EntityOperationAdmin';
 
 import PropTypes from 'prop-types';
 
-export default function AddGrades(props) {
+export default function AddCourses(props) {
   const { operation } = props.match.params;
-  const entityID = JSON.parse(localStorage.getItem('entity'))._id;
   return (
     <div>
       <EntityOperationAdmin
         {...props}
         operation={operation}
-        queryPost={'test/grade'}
-        queryGet={`test/grade/${entityID}`}
-        categoryName={'Grado'}
-        entity={'grade'}
+        queryPost={'course/admin'}
+        queryGet={'course/admin/getAllCourses'}
+        categoryName={'Course'}
+        entity={'courses'}
       />
     </div>
   );
 }
 
-AddGrades.propTypes = {
+AddCourses.propTypes = {
   match: PropTypes.any,
 };

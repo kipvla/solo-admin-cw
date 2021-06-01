@@ -1,14 +1,13 @@
-import {ReqOptions, CustomResponse} from '../interfaces/index';
 import axios from 'axios';
 import {URL} from '../assets/constants/url';
 
-const customFetch = <T>(
-  path: string,
-  reqType: string,
-  body?: any,
-  config?: any,
-): Promise<CustomResponse<T>> => {
-  const reqOptions: ReqOptions = {
+const customFetch = (
+  path,
+  reqType,
+  body,
+  config,
+)=> {
+  const reqOptions = {
     POST: async function () {
       try {
         console.log(`${URL}/${path}`, body, config);

@@ -17,6 +17,7 @@ import {
   ExpandLess,
   ExpandMore,
   Dashboard,
+  Add,
   List as ListIcon,
 } from '@material-ui/icons';
 
@@ -84,6 +85,14 @@ export default function Sidebar(props) {
       <Collapse in={openCollapse === 'clients'} timeout="auto" unmountOnExit>
         <List className={classes.list}>
           {CustomLink('/admin/clients', 'List', ListIcon)}
+        </List>
+      </Collapse>
+
+      <CustomMainLink clue="courses" label="Courses" />
+      <Collapse in={openCollapse === 'courses'} timeout="auto" unmountOnExit>
+        <List className={classes.list}>
+          {CustomLink('/admin/courses', 'List', ListIcon)}
+          {CustomLink('/admin/course/add', 'Creat Course', Add)}
         </List>
       </Collapse>
     </List>

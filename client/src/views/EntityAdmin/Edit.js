@@ -29,7 +29,7 @@ function Reference(props) {
     }
 
     setOptions(field.options);
-  }, []);
+  }, [data.productCategory, field.field, field.options, updateData]);
 
   return (
     <Autocomplete
@@ -54,7 +54,6 @@ function Reference(props) {
 }
 
 export default function Edit(props) {
-  const userID = JSON.parse(localStorage.getItem('user'))._id;
 
   const {dataEdit, queryEdit, history} = props;
   const [data, setData] = useState({});
@@ -64,7 +63,7 @@ export default function Edit(props) {
   useEffect(() => {
     setData(dataEdit.allInfo);
     setEntityFields(dataEdit.keysLabel);
-  }, []);
+  }, [dataEdit.allInfo, dataEdit.keysLabel]);
 
   const updateData = (key, value) => {
     const _data = {...data};
@@ -198,27 +197,33 @@ export default function Edit(props) {
       },
     };
     if (typeof types[field.type] !== 'function')
-      throw new Error('Invalid type');
+      return null;
     return types[field.type]();
   };
 
   const updateField = async () => {
     try {
       setDisabled(true);
-      const config = {
+      const jwt = localStorage.getItem('session');
+      const authConfig = {
         headers: {
-          'content-type': 'application/json',
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
         },
       };
-      data.updatedBy = userID;
+  
       const body = JSON.stringify(data);
-      const res = await axios.post(`${URL}/api/${queryEdit}`, body, config);
+      const res = await axios.put(`${URL}/${queryEdit}`, body, authConfig);
       toast(<CustomToast title={res.data} />);
       history.goBack();
 
       // hideProgressDialog();
     } catch (e) {
       setDisabled(false);
+      if (e.response.status === 401) {
+        localStorage.removeItem('session');
+        window.location.href = '/';
+      }
       // hideProgressDialog();
       console.log(e);
     }

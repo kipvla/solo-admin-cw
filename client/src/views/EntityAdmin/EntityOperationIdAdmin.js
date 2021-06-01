@@ -28,7 +28,6 @@ export default function IdOperationEntityAdmin(props) {
       );
       setData(res.data);
     } catch (err) {
-      console.log(err.response);
       if (err.response.status === 401) {
         localStorage.removeItem('session');
         window.location.href = '/';
@@ -52,7 +51,7 @@ export default function IdOperationEntityAdmin(props) {
           <Edit
             {...props}
             dataEdit={data}
-            queryEdit={`test/${data.entityName}/edit/${id}`}
+            queryEdit={`${data.entityName}/admin/edit/${id}`}
           />
         );
       },

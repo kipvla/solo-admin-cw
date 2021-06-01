@@ -7,7 +7,7 @@ import {
   Paper,
   TextField,
 } from '@material-ui/core';
-import AuthService from '../services/auth.ts';
+import AuthService from '../services/auth.js';
 import CustomToast from '../components/myComponents/custom-toast/index';
 import {toast} from 'react-toastify';
 

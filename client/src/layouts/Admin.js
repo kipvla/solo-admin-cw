@@ -10,8 +10,9 @@ import bgImage from 'assets/img/sidebar-4.jpg';
 
 import DashboardPage from '../views/Dashboard/Dashboard.js';
 import EntityOperationIdAdmin from '../views/EntityAdmin/EntityOperationIdAdmin';
-import GradeList from '../views/Grades/ListGrades';
-import AddGrades from '../views/Grades/AddGrades';
+import ClientList from '../views/Clients/ListClients';
+import CourseList from '../views/Courses/ListCourses';
+import AddCourse from '../views/Courses/AddCourses';
 
 import Auth from './Auth';
 
@@ -74,10 +75,11 @@ export default function Admin({...rest}) {
           <div className={classes.container}>
             <Switch>
               <Route path="/dashboard" component={DashboardPage} />
-              <Route path="/admin/clients" component={GradeList} exact />
+              <Route path="/admin/clients" component={ClientList} exact />
+              <Route path="/admin/courses" component={CourseList} exact />
               <Route
-                path="/admin/clients/:operation"
-                component={AddGrades}
+                path="/admin/course/:operation"
+                component={AddCourse}
                 exact
               />
               <Route

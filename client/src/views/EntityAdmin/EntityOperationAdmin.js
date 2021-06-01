@@ -27,7 +27,7 @@ function Reference(props) {
 
   useEffect(() => {
     setOptions(field.options);
-  }, []);
+  }, [field.options]);
 
   return (
     <Autocomplete
@@ -52,8 +52,7 @@ function Reference(props) {
 
 export default function EntityOperationAdmin(props) {
   const {operation, queryPost, queryGet, categoryName, entity} = props;
-  const entityID = JSON.parse(localStorage.getItem('entity'))._id;
-  const userID = JSON.parse(localStorage.getItem('user'))._id;
+ 
   const [entityFields, setEntityFields] = useState([]);
   const [data, setData] = useState({});
   const [disabled, setDisabled] = useState(true);
@@ -61,40 +60,48 @@ export default function EntityOperationAdmin(props) {
 
   const getInfoFromDB = async () => {
     try {
-      const config = {
+      const jwt = localStorage.getItem('session');
+      const authConfig = {
         headers: {
+          Authorization: `Bearer ${jwt}`,
           'Content-Type': 'application/json',
         },
       };
-      const res = await axios.get(`${URL}/api/${queryGet}`, config);
+  
+      const res = await axios.get(`${URL}/${queryGet}`, authConfig);
+      console.log(res);
       setEntityFields(res.data.keysLabel);
       setDisabled(false);
     } catch (err) {
       setDisabled(true);
+      if (err.response.status === 401) {
+        localStorage.removeItem('session');
+        window.location.href = '/';
+      }
       console.log(err);
     }
   };
 
   useEffect(() => {
     getInfoFromDB();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onNewEntity = async () => {
     try {
       setDisabled(true);
-      const config = {
+      const jwt = localStorage.getItem('session');
+      const authConfig = {
         headers: {
-          'content-type': 'application/json',
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
         },
       };
-      data.entityID = entityID;
-      data.createdBy = userID;
-      data.updatedBy = userID;
       const body = JSON.stringify(data);
       const res = await axios.post(
-        `${URL}/api/${queryPost}/${operation}`,
+        `${URL}/${queryPost}/${operation}`,
         body,
-        config,
+        authConfig,
       );
 
       if (queryPost === 'test/calendar-day') {
@@ -115,6 +122,10 @@ export default function EntityOperationAdmin(props) {
       // hideProgressDialog();
     } catch (e) {
       setDisabled(false);
+      if (e.response.status === 401) {
+        localStorage.removeItem('session');
+        window.location.href = '/';
+      }
       toast(<CustomToast title={e.response.data} />);
     }
   };
@@ -235,7 +246,9 @@ export default function EntityOperationAdmin(props) {
             variant="standard"
             currencySymbol="$"
             outputFormat="number"
-            onChange={(event, value) => updateData(field.field, value)}
+            onChange={(event, value) => {
+              console.log(value, 'money');
+              updateData(field.field, value);}}
             minimumValue={'0'}
             style={{width: '20%'}}
             textAlign="left"
@@ -248,11 +261,11 @@ export default function EntityOperationAdmin(props) {
           <ImageUploader
             ref={inputEl}
             withIcon={true}
-            buttonText="Escoger imagen"
+            buttonText="Upload image"
             onChange={image => imageHandler(image, field)}
             imgExtension={['.jpg', '.gif', '.png', '.gif']}
             maxFileSize={5242880}
-            label="Imagen de producto. Peso máximo: 5mb"
+            label="Pick an image for course cover. Max. size: 5mb"
             withPreview={true}
             singleImage={true}
             required={field.required}
@@ -261,7 +274,7 @@ export default function EntityOperationAdmin(props) {
       },
     };
     if (typeof types[field.type] !== 'function')
-      throw new Error('Invalid type');
+      return null;
     return types[field.type]();
   };
 
@@ -272,10 +285,11 @@ export default function EntityOperationAdmin(props) {
           <Container>
             {operation === 'add' && (
               <Fragment>
-                <h4>Nuevo {categoryName} </h4>
+                <h4>New {categoryName} </h4>
                 <form onSubmit={onSubmit}>
                   {Boolean(entityFields.length) &&
                     entityFields.map(field => {
+                      console.log(field, 'field here');
                       return (
                         <FormControl
                           key={field.field}
@@ -285,7 +299,7 @@ export default function EntityOperationAdmin(props) {
                       );
                     })}
                   <Button type="submit" variant="contained" disabled={disabled}>
-                    Guardar
+                    Save
                   </Button>
                 </form>
               </Fragment>

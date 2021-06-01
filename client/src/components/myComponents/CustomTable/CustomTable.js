@@ -51,6 +51,10 @@ export default function CustomTable({
       setData(res.data);
     } catch (err) {
       setIsLoading(false);
+      if (err.response.status === 401) {
+        localStorage.removeItem('session');
+        window.location.href = '/';
+      }
       console.log(err);
     }
   };
@@ -75,30 +79,31 @@ export default function CustomTable({
   }, []);
 
   const deleteData = async id => {
-    // try {
-    //   const config = {
-    //     headers: {
-    //       'content-type': 'application/json',
-    //     },
-    //   };
-    //   const dataToSend = {
-    //     userID,
-    //   };
-    //   const body = JSON.stringify(dataToSend);
-    //   const res = await axios.post(
-    //     `${URL}/api/${deleteQuery}/${id}`,
-    //     body,
-    //     config,
-    //   );
-    //   toast(<CustomToast title={res.data} />);
-    //   setIsDeleteModal(false);
-    //   setIdToDelete(0);
-    //   window.location.reload();
-    //   // hideProgressDialog();
-    // } catch (e) {
-    //   // hideProgressDialog();
-    //   console.log(e);
-    // }
+    try {
+      const jwt = localStorage.getItem('session');
+      const authConfig = {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
+        },
+      };
+      const res = await axios.delete(
+        `${URL}/${deleteQuery}/${id}`,
+        authConfig,
+      );
+      toast(<CustomToast title={res.data} />);
+      setIsDeleteModal(false);
+      setIdToDelete(0);
+      window.location.reload();
+      // hideProgressDialog();
+    } catch (e) {
+      // hideProgressDialog();
+      if (e.response.status === 401) {
+        localStorage.removeItem('session');
+        window.location.href = '/';
+      }
+      console.log(e);
+    }
   };
 
   const Options = params => {

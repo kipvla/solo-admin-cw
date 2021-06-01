@@ -1,5 +1,4 @@
-import {CustomResponse} from '../interfaces';
-import {customFetch} from './fetch.ts';
+import {customFetch} from './fetch.js';
 
 const config = {
   headers: {
@@ -9,10 +8,9 @@ const config = {
 
 const AuthService = () => {
   const handleLogin = async (
-    email: string,
-    password: string,
-  ): Promise<CustomResponse<any>> => {
-    return await customFetch<any>(
+    email, password
+  )=> {
+    return await customFetch(
       'auth/admin/login',
       'POST',
       {email, password},
