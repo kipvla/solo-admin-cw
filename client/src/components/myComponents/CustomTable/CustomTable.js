@@ -63,8 +63,9 @@ export default function CustomTable({
     if (data && Object.entries(data).length > 0) {
       setHardRows(
         data.allInfo.map((info, index) => {
+          // To format data that can't be displayed in table
           info.id = index + 1;
-
+          info.price = '$' + info.price?.$numberDecimal;
           info.done = info.done === true ? 'Sí' : 'No';
 
           return info;
