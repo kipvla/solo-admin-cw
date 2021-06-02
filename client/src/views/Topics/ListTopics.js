@@ -53,28 +53,31 @@ export default function ListTopics() {
   };
 
   const deleteData = async (id) => {
-    // console.log(id);
-    // try {
-    //   const config = {
-    //     headers: {
-    //       'content-type': 'application/json',
-    //     },
-    //   };
-    //   const body = JSON.stringify(dataToSend);
-    //   const res = await axios.post(
-    //     `${URL}/api/calendar/disable-activity-type/${id}`,
-    //     body,
-    //     config,
-    //   );
-    //   toast(<CustomToast title={res.data} />);
-    //   setIsDeleteModal(false);
-    //   setIdToDelete(0);
-    //   window.location.reload();
-    //   // hideProgressDialog();
-    // } catch (e) {
-    //   // hideProgressDialog();
-    //   console.log(e);
-    // }
+    try {
+      const jwt = localStorage.getItem('session');
+      const authConfig = {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
+        },
+      };
+      const res = await axios.delete(
+        `${URL}/topic/admin/delete/${id}`,
+        authConfig,
+      );
+      toast(<CustomToast title={res.data} />);
+      setIsDeleteModal(false);
+      setIdToDelete(0);
+      window.location.reload();
+      // hideProgressDialog();
+    } catch (e) {
+      // hideProgressDialog();
+      if (e.response.status === 401) {
+        localStorage.removeItem('session');
+        window.location.href = '/';
+      }
+      console.log(e);
+    }
   };
 
   const Options = (params) => {

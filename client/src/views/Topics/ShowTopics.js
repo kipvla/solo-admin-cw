@@ -39,7 +39,7 @@ export default function ShowTopics(props) {
   const { id } = props.match.params;
   const [data, setData] = useState({});
 
-  const getActivityTypeData = async () => {
+  const getTopicById = async () => {
     try {
       const jwt = localStorage.getItem('session');
       const authConfig = {
@@ -63,7 +63,7 @@ export default function ShowTopics(props) {
   };
 
   useEffect(() => {
-    getActivityTypeData();
+    getTopicById();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

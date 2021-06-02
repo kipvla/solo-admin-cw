@@ -1,7 +1,6 @@
-import React, { useEffect, useState, Fragment } from 'react';
-import { URL } from '../../assets/constants/url';
-import PropTypes from 'prop-types';
+import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
+import { URL } from '../../assets/constants/url';
 import GridContainer from 'components/defaultComponents/Grid/GridContainer';
 import GridItem from 'components/defaultComponents/Grid/GridItem';
 import {
@@ -11,242 +10,179 @@ import {
   FormControl,
   TextField,
 } from '@material-ui/core';
-import moment from 'moment';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import PropTypes from 'prop-types';
+import CheckIcon from '../../assets/img/check-icon.ico';
+import CrossIcon from '../../assets/img/delete-icon.png';
 import CustomToast from '../../components/myComponents/custom-toast';
 import { toast } from 'react-toastify';
 
-const config = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
 export default function EditTopics(props) {
   const { id } = props.match.params;
-  const entityID = JSON.parse(localStorage.getItem('entity'))._id;
-  const userID = JSON.parse(localStorage.getItem('user'))._id;
-  const [data, setData] = useState(null);
-  const [disabled, setDisabled] = useState(false);
-  const [childQuestions, setChildQuestions] = useState(['']);
-  const [guideQuestions, setGuideQuestions] = useState(['']);
-  const [selectedGrade, setSelectedGrade] = useState(null);
-  const [selectedCalendarDay, setSelectedCalendarDay] = useState(null);
+  const [disabled, setDisabled] = useState(true);
+  const [topicQuestions, setTopicQuestions] = useState([{question: '', choices: [{name: '', correct: true}, {name: '', correct: false}]}]);
+  const [courseName, setCourseName] = useState('');
   const [description, setDescription] = useState('');
   const [videoURL, setVideoURL] = useState('');
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [calendarFormatStartDate, setCalendarFormatStartDate] = useState('');
-  const [calendarFormatEndDate, setCalendarFormatEndDate] = useState('');
   const [name, setName] = useState('');
-  const [gradeName, setGradeName] = useState('');
-  const [dayNumber, setDayNumber] = useState(0);
-  const [activityDuration, setActivityDuration] = useState(0);
 
-  const getActivityTypeData = async () => {
+
+  const updateStates = (data) => {
+    const {courseName, videoURL, name, questions, description } = data.allInfo;
+    setCourseName(courseName);
+    setVideoURL(videoURL);
+    setName(name);
+    setTopicQuestions(questions);
+    setDescription(description);
+  
+  };
+
+  const getTopicById = async () => {
     try {
-      // this request returns all option of the different grades along with the id;
+      const jwt = localStorage.getItem('session');
+      const authConfig = {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
+        },
+      };
       const res = await axios.get(
-        `${URL}/api/test/activityTypeByID/${id}`,
-        config,
+        `${URL}/topic/admin/getTopicById/${id}`,
+        authConfig,
       );
-      setData(res.data);
+      setDisabled(false);
+      updateStates(res.data);
     } catch (err) {
+      if (err.response.status === 401) {
+        localStorage.removeItem('session');
+        window.location.href = '/';
+      }
       console.log(err);
     }
   };
+
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (startDate < endDate) {
-      const activityTypeInfo = {
-        entityID,
-        gradeID: selectedGrade,
-        calendarDayID: selectedCalendarDay,
-        videoURL: videoURL.trim().toLowerCase(),
-        name: name.trim(),
-        description: description.trim(),
-        childQuestions,
-        guideQuestions,
-        updatedBy: userID,
-        gradeName: gradeName.trim(),
-        activityTypeID: data.allInfo._id,
-        startDate,
-        endDate,
-        calendarFormatStartDate,
-        calendarFormatEndDate,
-        activityDuration,
+    try {
+      setDisabled(true);
+      const jwt = localStorage.getItem('session');
+      const authConfig = {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
+        },
       };
-      const body = JSON.stringify(activityTypeInfo);
-      try {
-        setDisabled(true);
-        const res = await axios.post(
-          `${URL}/api/calendar/edit-activity-type`,
-          body,
-          config,
-        );
-        toast(<CustomToast title={res.data} />);
-        props.history.goBack();
-      } catch (e) {
-        setDisabled(false);
-        console.log(e);
-      }
-    } else {
-      toast(
-        <CustomToast title="La fecha inicial no puede ser mayor a la final." />,
+      const body = JSON.stringify({questions: topicQuestions, videoURL, description, name});
+      const res = await axios.put(
+        `${URL}/topic/admin/edit/${id}`,
+        body,
+        authConfig,
       );
+      toast(<CustomToast title={res.data} />);
+      props.history.replace('/admin/topics');
+    } catch (e) {
+      setDisabled(false);
+      if (e.response.status === 401) {
+        localStorage.removeItem('session');
+        window.location.href = '/';
+      }
+      toast(<CustomToast title={e.response.data} />);
     }
   };
 
-  const childQuestionRemover = (idx) => {
-    setChildQuestions((prevChildQuestions) =>
-      prevChildQuestions.filter((question, index) => index !== idx),
+
+  const topicQuestionRemover = (idx) => {
+    setTopicQuestions((prevTopicQuestions) =>
+      prevTopicQuestions.filter((question, index) => index !== idx),
     );
   };
 
-  const guideQuestionRemover = (idx) => {
-    setGuideQuestions((prevGuideQuestions) =>
-      prevGuideQuestions.filter((question, index) => index !== idx),
-    );
-  };
-
-  const childQuestionsModifier = (idx, e) => {
-    setChildQuestions((prevQuestions) => {
+  const topicQuestionsModifier = (idx, e) => {
+    setTopicQuestions((prevQuestions) => {
       let newQuestions = [...prevQuestions];
-      newQuestions[idx] = e;
+      newQuestions[idx].question = e;
       return newQuestions;
     });
   };
 
-  const guideQuestionsModifier = (idx, e) => {
-    setGuideQuestions((prevQuestions) => {
-      let newQuestions = [...prevQuestions];
-      newQuestions[idx] = e;
-      return newQuestions;
+  const handleAddOption = (questionIdx) => {
+    setTopicQuestions((prevTopicQuestions) => {
+      let copyOfQuestions = [...prevTopicQuestions];
+      copyOfQuestions[questionIdx].choices = [...copyOfQuestions[questionIdx].choices, {name: '', correct: false}];
+      return copyOfQuestions;
+
     });
   };
 
-  const setStatesWithDBInfo = () => {
-    const {
-      gradeID,
-      gradeName,
-      dayNumber,
-      name,
-      description,
-      videoURL,
-      childQuestions,
-      guideQuestions,
-      calendarDayID,
-      startDate,
-      endDate,
-      calendarFormatStartDate,
-      calendarFormatEndDate,
-      activityDuration,
-    } = data.allInfo;
-    setGradeName(gradeName);
-    setSelectedGrade(gradeID);
-    setDayNumber(dayNumber);
-    setName(name);
-    setDescription(description);
-    setVideoURL(videoURL);
-    setChildQuestions(childQuestions);
-    setGuideQuestions(guideQuestions);
-    setSelectedCalendarDay(calendarDayID);
-    setStartDate(startDate);
-    setEndDate(endDate);
-    setCalendarFormatStartDate(calendarFormatStartDate);
-    setCalendarFormatEndDate(calendarFormatEndDate);
-    setActivityDuration(activityDuration);
+  const handleDeleteOption = (questionIdx, choiceIdx) => {
+    setTopicQuestions((prevTopicQuestions) => {
+      let copyOfQuestions = [...prevTopicQuestions];
+      copyOfQuestions[questionIdx].choices.splice(choiceIdx,1);
+      return copyOfQuestions;
+    });
+  };
+
+  const  topicOptionModifier = (questionIdx, choiceIdx, e) => {
+    setTopicQuestions((prevTopicQuestions) => {
+      let copyOfQuestions = [...prevTopicQuestions];
+      copyOfQuestions[questionIdx].choices[choiceIdx].name = e;
+      return copyOfQuestions;
+    });
+  };
+
+  const handleChangeCorrectOption = (questionIdx, choiceIdx) => {
+    setTopicQuestions((prevTopicQuestions) => {
+      let copyOfQuestions = [...prevTopicQuestions];
+      const choices = copyOfQuestions[questionIdx].choices;
+      for (let i = 0; i<choices.length; i++) {
+        if (i === choiceIdx) {
+          copyOfQuestions[questionIdx].choices[i].correct = true;
+          continue;
+        } 
+        copyOfQuestions[questionIdx].choices[i].correct = false;
+      }
+      return copyOfQuestions;
+    });
   };
 
   useEffect(() => {
-    getActivityTypeData();
+    getTopicById();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (data) {
-      setStatesWithDBInfo();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+
   return (
     <GridContainer>
-      {' '}
       <GridItem xs={12}>
         <Card>
           <Container>
             <Fragment>
-              <h4>Editar Actividad </h4>
-              <form style={{ display: !data && 'none' }} onSubmit={onSubmit}>
-                <FormControl key={'gradeID'} className="custom-field-form">
-                  <TextField
-                    label={'Grado'}
-                    variant="outlined"
-                    size="small"
-                    type="text"
-                    value={gradeName || ''}
-                    disabled={true}
-                  />
-                </FormControl>
-
-                <FormControl
-                  key={'selectedCalendarDay'}
+              <h4>Edit Topic </h4>
+              <form onSubmit={onSubmit}>
+                <div
                   className="custom-field-form"
+                  style={{ width: '100%' }}
                 >
-                  <TextField
-                    label={'Día'}
-                    variant="outlined"
-                    size="small"
-                    type="text"
-                    value={dayNumber || ''}
-                    disabled={true}
-                  />
-                </FormControl>
-
+                  <FormControl
+                    className="custom-field-form"
+                    key={'course'}
+                  >
+                    <TextField
+                      label={'Course'}
+                      variant="outlined"
+                      size="small"
+                      type="text"
+                      value={courseName || ''}
+                      disabled={true}
+                    />
+                  </FormControl>
+                </div>
+              
                 <Fragment>
-                  <FormControl key={'startDate'} className="custom-field-form">
-                    <TextField
-                      id="datetime-local"
-                      label="Fecha inicio"
-                      type="datetime-local"
-                      value={calendarFormatStartDate}
-                      required={true}
-                      onChange={(e) => {
-                        setStartDate(
-                          moment(
-                            e.target.value,
-                            'YYYY-MM-DDTHH:mm',
-                          ).toISOString(),
-                        );
-                        setCalendarFormatStartDate(e.target.value);
-                      }}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl key={'endDate'} className="custom-field-form">
-                    <TextField
-                      id="datetime-local2"
-                      label="Fecha final"
-                      type="datetime-local"
-                      value={calendarFormatEndDate}
-                      required={true}
-                      onChange={(e) => {
-                        setEndDate(
-                          moment(
-                            e.target.value,
-                            'YYYY-MM-DDTHH:mm',
-                          ).toISOString(),
-                        );
-                        setCalendarFormatEndDate(e.target.value);
-                      }}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </FormControl>
+              
                   <FormControl key={'name'} className="custom-field-form">
                     <TextField
-                      label={'Nombre de actividad'}
+                      label={'Topic name'}
                       variant="outlined"
                       size="small"
                       type="text"
@@ -260,7 +196,7 @@ export default function EditTopics(props) {
                     className="custom-field-form"
                   >
                     <TextField
-                      label={'Descripción de actividad'}
+                      label={'Topic description'}
                       variant="outlined"
                       size="small"
                       type="text"
@@ -270,23 +206,11 @@ export default function EditTopics(props) {
                     />
                   </FormControl>
                   <FormControl
-                    key={'activityDuration'}
+                    key={'videoURL'}
                     className="custom-field-form"
                   >
                     <TextField
-                      label={'Duración Promedio (Minutos)'}
-                      variant="outlined"
-                      size="small"
-                      type="number"
-                      value={activityDuration || 0}
-                      onChange={(e) => setActivityDuration(e.target.value)}
-                      required={true}
-                      InputProps={{ inputProps: { min: 0 } }}
-                    />
-                  </FormControl>
-                  <FormControl key={'videoURL'} className="custom-field-form">
-                    <TextField
-                      label={'URL del video'}
+                      label={'Video URL'}
                       variant="outlined"
                       size="small"
                       type="text"
@@ -295,8 +219,10 @@ export default function EditTopics(props) {
                       required={true}
                     />
                   </FormControl>
+                  <div style={{fontWeight: 'bold', marginBottom: '20px'}}>Multiple choice, only one correct answer!</div>
 
-                  {childQuestions.map((question, idx) => {
+                  {topicQuestions.map((question, idx) => {
+                    const choices = question.choices;
                     return (
                       <div
                         key={idx}
@@ -304,26 +230,74 @@ export default function EditTopics(props) {
                         style={{ marginBottom: idx !== 0 && '20px' }}
                       >
                         <TextField
-                          label={`Pregunta del niño #${idx + 1}`}
+                          label={`Topic question #${idx + 1}`}
                           variant="outlined"
                           size="small"
                           type="text"
-                          value={question || ''}
+                          value={question.question || ''}
                           onChange={(e) =>
-                            childQuestionsModifier(idx, e.target.value)
+                            topicQuestionsModifier(idx, e.target.value)
                           }
                           required={true}
-                          style={{ width: '70%' }}
+                          style={{ width: '70%', marginBottom: '20px' }}
                         />
                         {idx !== 0 && (
                           <Button
-                            onClick={() => childQuestionRemover(idx)}
+                            onClick={() => topicQuestionRemover(idx)}
                             variant="contained"
                             style={{ width: '20%', marginLeft: '20px' }}
                           >
-                            Eliminar
+                                Delete Question
                           </Button>
                         )}
+                        {
+                          choices.map((choice, choiceIdx) => {
+                            return (<div  key={choiceIdx}
+                
+                              style={{ marginBottom:  '20px', display: 'flex', alignItems: 'center' }}> <TextField
+                                label={`Question #${idx+1} Option #${choiceIdx + 1}`}
+                                variant="outlined"
+                                size="small"
+                                type="text"
+                                value={choice.name|| ''}
+                                onChange={(e) =>
+                                  topicOptionModifier(idx, choiceIdx, e.target.value)
+                                }
+                                required={true}
+                                style={{ width: '70%' }}
+                              />
+                              <img
+                                alt=""
+                                src={choice.correct ? CheckIcon : CrossIcon}
+                                style={{ width: '25px', height: '25px', marginLeft: '10px' }}
+                              />
+                              
+                              {!choice.correct &&  <Button
+                                onClick={() => handleChangeCorrectOption(idx, choiceIdx)}
+                                variant="contained"
+                                style={{ width: '100px', marginLeft: '20px' }}
+                              >
+                                Correct
+                              </Button>}
+                              {choiceIdx > 1 &&(  <Button
+                                onClick={() => handleDeleteOption(idx, choiceIdx)}
+                                variant="contained"
+                                style={{ width: '100px', marginLeft: '20px' }}
+                              >
+                                Delete
+                              </Button>) }
+                            </div>);
+                          })
+                        }
+                        <div className="custom-field-form">
+                          <Button
+                            variant="contained"
+                            onClick={() => handleAddOption(idx)}
+                          >
+                          Add Option
+                          </Button>
+                        </div>
+                        
                       </div>
                     );
                   })}
@@ -331,77 +305,32 @@ export default function EditTopics(props) {
                     <Button
                       variant="contained"
                       onClick={() => {
-                        setChildQuestions((prevChildQuestions) => [
-                          ...prevChildQuestions,
-                          '',
+                        setTopicQuestions((prevTopicQuestions) => [
+                          ...prevTopicQuestions,
+                          {question: '', choices: [{name: '', correct: true}, {name: '', correct: false}]},
                         ]);
                       }}
                     >
-                      Añadir Pregunta Niño
+                          Add Topic Question
                     </Button>
                   </div>
 
-                  {guideQuestions.map((question, idx) => {
-                    return (
-                      <div
-                        key={idx}
-                        className={idx === 0 ? 'custom-field-form' : null}
-                        style={{ marginBottom: idx !== 0 && '20px' }}
-                      >
-                        <TextField
-                          label={`Pregunta del guía #${idx + 1}`}
-                          variant="outlined"
-                          size="small"
-                          type="text"
-                          value={question || ''}
-                          onChange={(e) =>
-                            guideQuestionsModifier(idx, e.target.value)
-                          }
-                          required={true}
-                          style={{ width: '70%' }}
-                        />
-                        {idx !== 0 && (
-                          <Button
-                            onClick={() => guideQuestionRemover(idx)}
-                            variant="contained"
-                            style={{ width: '20%', marginLeft: '20px' }}
-                          >
-                            Eliminar
-                          </Button>
-                        )}
-                      </div>
-                    );
-                  })}
-                  <div className="custom-field-form">
-                    <Button
-                      variant="contained"
-                      onClick={() => {
-                        setGuideQuestions((prevGuideQuestions) => [
-                          ...prevGuideQuestions,
-                          '',
-                        ]);
-                      }}
-                    >
-                      Añadir Pregunta Guía
-                    </Button>
-                  </div>
                 </Fragment>
-
                 <Button type="submit" variant="contained" disabled={disabled}>
-                  Editar
+                    Edit
                 </Button>
               </form>
             </Fragment>
-
             <br />
           </Container>
         </Card>
-      </GridItem>{' '}
+      </GridItem>
     </GridContainer>
   );
 }
 
 EditTopics.propTypes = {
-  history: PropTypes.any,
   match: PropTypes.any,
+  history: PropTypes.any,
+  location: PropTypes.any,
 };
