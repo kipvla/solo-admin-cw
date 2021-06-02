@@ -11,16 +11,13 @@ import {
 } from '@material-ui/core';
 import { URL } from '../../assets/constants/url';
 import axios from 'axios';
+import CheckIcon from '../../assets/img/check-icon.ico';
+import CrossIcon from '../../assets/img/delete-icon.png';
+import './Topics.css';
 
-const config = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
 
 function Media(props) {
   const { data } = props;
-  // hay que ver si es una foto un video o un array de fotos o videos
   return (
     <TableCell>
       {data !== '' ? (
@@ -44,13 +41,23 @@ export default function ShowTopics(props) {
 
   const getActivityTypeData = async () => {
     try {
-      // this request returns all option of the different grades along with the id;
+      const jwt = localStorage.getItem('session');
+      const authConfig = {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
+        },
+      };
       const res = await axios.get(
-        `${URL}/api/test/activityTypeByID/${id}`,
-        config,
+        `${URL}/topic/admin/getTopicById/${id}`,
+        authConfig,
       );
       setData(res.data);
     } catch (err) {
+      if (err.response.status === 401) {
+        localStorage.removeItem('session');
+        window.location.href = '/';
+      }
       console.log(err);
     }
   };
@@ -59,9 +66,31 @@ export default function ShowTopics(props) {
     getActivityTypeData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const questionsJSXGenerator = (question, index) => {
+    const questionName = question.question;
+    const choices = question.choices;
+    const choicesHTML = (
+      <div>
+        {choices.map((choice,index)=> {
+          return (
+            <div className="choice-container" key={index}>
+              <img
+                alt=""
+                src={choice.correct ? CheckIcon : CrossIcon}
+                className="icons-questions"
+              />
+              <div style={{marginRight: '5px'}}>{index+1}).</div>
+              <div>{choice.name}</div>
+            </div>);
+        })}
+      </div>);
+    return (<div key={index} style={{marginBottom: '20px'}}><div style={{marginBottom: '10px'}}>Question #{index+1} {questionName}</div>{choicesHTML}</div>);
+
+  };
   return (
     <Container>
-      <h4>Detalle Actividad </h4>
+      <h4>Topic Detail </h4>
       <TableContainer component={Paper}>
         {Boolean(data && Object.entries(data).length > 0) && (
           <Table>
@@ -85,7 +114,7 @@ export default function ShowTopics(props) {
                     ) : key.type === 'array' ? (
                       <TableCell>
                         {data.allInfo[key.field].map((ele, index) => {
-                          return <div key={index}>{ele}</div>;
+                          return questionsJSXGenerator(ele, index);
                         })}
                       </TableCell>
                     ) : (

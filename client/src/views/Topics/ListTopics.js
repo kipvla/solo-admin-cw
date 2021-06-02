@@ -20,15 +20,7 @@ import { DataGrid, GridToolbar } from '@material-ui/data-grid';
 import CustomToast from '../../components/myComponents/custom-toast';
 import { toast } from 'react-toastify';
 
-const config = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
-
 export default function ListTopics() {
-  const entityID = JSON.parse(localStorage.getItem('entity'))._id;
-  const userID = JSON.parse(localStorage.getItem('user'))._id;
   const [data, setData] = useState({});
   const [isDeleteModal, setIsDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(0);
@@ -37,45 +29,52 @@ export default function ListTopics() {
 
   const getInformationDB = async () => {
     try {
-      // this request returns all option of the different grades along with the id;
+      const jwt = localStorage.getItem('session');
+      const authConfig = {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
+        },
+      };
       const res = await axios.get(
-        `${URL}/api/test/activity-type/${entityID}`,
-        config,
+        `${URL}/topic/admin/getAllTopics`,
+        authConfig,
       );
       setIsLoading(false);
       setData(res.data);
     } catch (err) {
       setIsLoading(false);
+      if (err.response.status === 401) {
+        localStorage.removeItem('session');
+        window.location.href = '/';
+      }
       console.log(err);
     }
   };
 
   const deleteData = async (id) => {
-    console.log(id);
-    try {
-      const config = {
-        headers: {
-          'content-type': 'application/json',
-        },
-      };
-      const dataToSend = {
-        userID,
-      };
-      const body = JSON.stringify(dataToSend);
-      const res = await axios.post(
-        `${URL}/api/calendar/disable-activity-type/${id}`,
-        body,
-        config,
-      );
-      toast(<CustomToast title={res.data} />);
-      setIsDeleteModal(false);
-      setIdToDelete(0);
-      window.location.reload();
-      // hideProgressDialog();
-    } catch (e) {
-      // hideProgressDialog();
-      console.log(e);
-    }
+    // console.log(id);
+    // try {
+    //   const config = {
+    //     headers: {
+    //       'content-type': 'application/json',
+    //     },
+    //   };
+    //   const body = JSON.stringify(dataToSend);
+    //   const res = await axios.post(
+    //     `${URL}/api/calendar/disable-activity-type/${id}`,
+    //     body,
+    //     config,
+    //   );
+    //   toast(<CustomToast title={res.data} />);
+    //   setIsDeleteModal(false);
+    //   setIdToDelete(0);
+    //   window.location.reload();
+    //   // hideProgressDialog();
+    // } catch (e) {
+    //   // hideProgressDialog();
+    //   console.log(e);
+    // }
   };
 
   const Options = (params) => {
@@ -84,14 +83,14 @@ export default function ListTopics() {
     return (
       <div>
         {Boolean(data.tableOptions.show) && (
-          <Link to={`/admin/show/activity-types/${mongoID}`}>
+          <Link to={`/admin/show/topics/${mongoID}`}>
             <IconButton style={{ padding: '7px' }}>
               <Visibility color="action" />
             </IconButton>
           </Link>
         )}
         {Boolean(data.tableOptions.edit) && (
-          <Link to={`/admin/edit/activity-types/${mongoID}`}>
+          <Link to={`/admin/edit/topics/${mongoID}`}>
             <IconButton style={{ padding: '7px' }}>
               <Edit color="action" />
             </IconButton>
@@ -133,7 +132,7 @@ export default function ListTopics() {
       <GridItem xs={12}>
         <Card>
           <Container>
-            <h4>Actividades</h4>
+            <h4>Topics</h4>
             <TableContainer component={Paper}>
               <div style={{ height: 450, width: '100%' }}>
                 <DataGrid
@@ -180,7 +179,7 @@ export default function ListTopics() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          ¿Estás seguro de que deseas eliminar este elemento?
+          Are you sure you want to delete this item?
         </DialogTitle>
         <DialogActions>
           <Button
@@ -190,14 +189,14 @@ export default function ListTopics() {
             }}
             color="primary"
           >
-            Cancelar
+            Cancel
           </Button>
           <Button
             onClick={() => deleteData(idToDelete)}
             color="primary"
             autoFocus
           >
-            Borrar
+            Delete
           </Button>
         </DialogActions>
       </Dialog>

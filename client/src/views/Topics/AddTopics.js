@@ -14,7 +14,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import PropTypes from 'prop-types';
 import CheckIcon from '../../assets/img/check-icon.ico';
 import CrossIcon from '../../assets/img/delete-icon.png';
-import moment from 'moment';
 import CustomToast from '../../components/myComponents/custom-toast';
 import { toast } from 'react-toastify';
 
@@ -26,8 +25,6 @@ export default function AddTopics(props) {
   const [description, setDescription] = useState('');
   const [videoURL, setVideoURL] = useState('');
   const [name, setName] = useState('');
-
-  console.log(topicQuestions);
 
   const getAllCourses = async () => {
     try {
@@ -56,7 +53,31 @@ export default function AddTopics(props) {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    // handle submit
+    try {
+      setDisabled(true);
+      const jwt = localStorage.getItem('session');
+      const authConfig = {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
+        },
+      };
+      const body = JSON.stringify({questions: topicQuestions, videoURL, description, name, courseID:selectedCourse});
+      const res = await axios.post(
+        `${URL}/topic/admin/add`,
+        body,
+        authConfig,
+      );
+      toast(<CustomToast title={res.data} />);
+      props.history.replace('/admin/topics');
+    } catch (e) {
+      setDisabled(false);
+      if (e.response.status === 401) {
+        localStorage.removeItem('session');
+        window.location.href = '/';
+      }
+      toast(<CustomToast title={e.response.data} />);
+    }
   };
 
 
