@@ -87,7 +87,7 @@ export default function Admin({...rest}) {
                 exact
               />
               <Route
-                path="/admin/topic/:operation"
+                path="/admin/topic/add"
                 component={AddTopics}
                 exact
               />

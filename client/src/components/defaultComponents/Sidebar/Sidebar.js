@@ -100,7 +100,7 @@ export default function Sidebar(props) {
       <Collapse in={openCollapse === 'topics'} timeout="auto" unmountOnExit>
         <List className={classes.list}>
           {CustomLink('/admin/topics', 'List', ListIcon)}
-          {CustomLink('/admin/topics/add', 'Creat Course', Add)}
+          {CustomLink('/admin/topic/add', 'Creat Topic', Add)}
         </List>
       </Collapse>
     </List>
