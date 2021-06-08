@@ -46,7 +46,6 @@ export default function CustomTable({
         },
       };
       const res = await axios.get(`${URL}/${query}`, authConfig);
-      console.log(res, 'info from db');
       setIsLoading(false);
       setData(res.data);
     } catch (err) {

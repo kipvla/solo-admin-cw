@@ -69,7 +69,6 @@ export default function EntityOperationAdmin(props) {
       };
   
       const res = await axios.get(`${URL}/${queryGet}`, authConfig);
-      console.log(res);
       setEntityFields(res.data.keysLabel);
       setDisabled(false);
     } catch (err) {
@@ -176,10 +175,6 @@ export default function EntityOperationAdmin(props) {
     updateData(field.field, null);
   };
 
-  useEffect(() => {
-    console.log(data, 'data changing');
-  }, [data]);
-
   const getField = field => {
     const types = {
       string: function () {
@@ -247,7 +242,6 @@ export default function EntityOperationAdmin(props) {
             currencySymbol="$"
             outputFormat="number"
             onChange={(event, value) => {
-              console.log(value, 'money');
               updateData(field.field, value);}}
             minimumValue={'0'}
             style={{width: '20%'}}
@@ -289,7 +283,6 @@ export default function EntityOperationAdmin(props) {
                 <form onSubmit={onSubmit}>
                   {Boolean(entityFields.length) &&
                     entityFields.map(field => {
-                      console.log(field, 'field here');
                       return (
                         <FormControl
                           key={field.field}
