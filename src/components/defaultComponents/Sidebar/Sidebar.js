@@ -103,6 +103,13 @@ export default function Sidebar(props) {
           {CustomLink('/admin/topic/add', 'Creat Topic', Add)}
         </List>
       </Collapse>
+
+      <CustomMainLink clue="purchases" label="Purchases" />
+      <Collapse in={openCollapse === 'purchases'} timeout="auto" unmountOnExit>
+        <List className={classes.list}>
+          {CustomLink('/admin/purchases', 'List', ListIcon)}
+        </List>
+      </Collapse>
     </List>
   );
 

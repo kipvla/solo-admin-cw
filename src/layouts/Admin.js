@@ -17,6 +17,7 @@ import AddTopics from '../views/Topics/AddTopics';
 import EditTopics from '../views/Topics/EditTopics';
 import TopicsList from '../views/Topics/ListTopics';
 import ShowTopics from '../views/Topics/ShowTopics';
+import PurchaseList from '../views/Purchases/ListPurchases';
 
 import Auth from './Auth';
 
@@ -104,6 +105,11 @@ export default function Admin({...rest}) {
               <Route
                 path="/admin/show/topics/:id"
                 component={ShowTopics}
+                exact
+              />
+              <Route
+                path="/admin/purchases"
+                component={PurchaseList}
                 exact
               />
               <Route
