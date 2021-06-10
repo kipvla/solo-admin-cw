@@ -18,6 +18,7 @@ import EditTopics from '../views/Topics/EditTopics';
 import TopicsList from '../views/Topics/ListTopics';
 import ShowTopics from '../views/Topics/ShowTopics';
 import PurchaseList from '../views/Purchases/ListPurchases';
+import ShowGlobalStats from '../views/GlobalStats/ShowGlobalStats';
 
 import Auth from './Auth';
 
@@ -110,6 +111,11 @@ export default function Admin({...rest}) {
               <Route
                 path="/admin/purchases"
                 component={PurchaseList}
+                exact
+              />
+              <Route
+                path="/admin/stats/global"
+                component={ShowGlobalStats}
                 exact
               />
               <Route

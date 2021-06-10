@@ -110,6 +110,13 @@ export default function Sidebar(props) {
           {CustomLink('/admin/purchases', 'List', ListIcon)}
         </List>
       </Collapse>
+
+      <CustomMainLink clue="stats" label="Global Stats" />
+      <Collapse in={openCollapse === 'stats'} timeout="auto" unmountOnExit>
+        <List className={classes.list}>
+          {CustomLink('/admin/stats/global', 'List', ListIcon)}
+        </List>
+      </Collapse>
     </List>
   );
 
