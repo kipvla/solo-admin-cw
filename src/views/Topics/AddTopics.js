@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
-import { URL } from '../../assets/constants/url';
 import GridContainer from 'components/defaultComponents/Grid/GridContainer';
 import GridItem from 'components/defaultComponents/Grid/GridItem';
 import {
@@ -16,6 +15,8 @@ import CheckIcon from '../../assets/img/check-icon.ico';
 import CrossIcon from '../../assets/img/delete-icon.png';
 import CustomToast from '../../components/myComponents/custom-toast';
 import { toast } from 'react-toastify';
+
+const {REACT_APP_SERVER_URL} = process.env;
 
 export default function AddTopics(props) {
   const [disabled, setDisabled] = useState(true);
@@ -36,7 +37,7 @@ export default function AddTopics(props) {
         },
       };
       const res = await axios.get(
-        `${URL}/course/admin/getAllCourses`,
+        `${REACT_APP_SERVER_URL}/course/admin/getAllCourses`,
         authConfig,
       );
       setCourseOptions(res.data.modifiedCourse);
@@ -64,7 +65,7 @@ export default function AddTopics(props) {
       };
       const body = JSON.stringify({questions: topicQuestions, videoURL, description, name, courseID:selectedCourse});
       const res = await axios.post(
-        `${URL}/topic/admin/add`,
+        `${REACT_APP_SERVER_URL}/topic/admin/add`,
         body,
         authConfig,
       );

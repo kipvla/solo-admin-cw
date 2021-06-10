@@ -6,7 +6,8 @@ import GridItem from 'components/defaultComponents/Grid/GridItem';
 import {Card} from '@material-ui/core';
 import Show from './Show';
 import Edit from './Edit';
-import {URL} from '../../assets/constants/url';
+
+const {REACT_APP_SERVER_URL} = process.env;
 
 export default function IdOperationEntityAdmin(props) {
   const {operation, id, query} = props.match.params;
@@ -23,7 +24,7 @@ export default function IdOperationEntityAdmin(props) {
         },
       };
       const res = await axios.get(
-        `${URL}/${query.replaceAll('-', '/')}/${id}`,
+        `${REACT_APP_SERVER_URL}/${query.replaceAll('-', '/')}/${id}`,
         authConfig,
       );
       setData(res.data);

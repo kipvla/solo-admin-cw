@@ -18,9 +18,10 @@ import {Link} from 'react-router-dom';
 import {Edit, Visibility, Delete, AddCircle} from '@material-ui/icons';
 import {DataGrid, GridToolbar} from '@material-ui/data-grid';
 
-import {URL} from '../../../assets/constants/url';
 import CustomToast from '../custom-toast';
 import {toast} from 'react-toastify';
+
+const {REACT_APP_SERVER_URL} = process.env;
 
 
 export default function CustomTable({
@@ -45,7 +46,7 @@ export default function CustomTable({
           'Content-Type': 'application/json',
         },
       };
-      const res = await axios.get(`${URL}/${query}`, authConfig);
+      const res = await axios.get(`${REACT_APP_SERVER_URL}/${query}`, authConfig);
       setIsLoading(false);
       setData(res.data);
     } catch (err) {
@@ -88,7 +89,7 @@ export default function CustomTable({
         },
       };
       const res = await axios.delete(
-        `${URL}/${deleteQuery}/${id}`,
+        `${REACT_APP_SERVER_URL}/${deleteQuery}/${id}`,
         authConfig,
       );
       toast(<CustomToast title={res.data} />);

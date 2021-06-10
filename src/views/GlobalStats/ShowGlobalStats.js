@@ -10,7 +10,9 @@ import {
 import moment from 'moment';
 import CustomToast from '../../components/myComponents/custom-toast';
 import { toast } from 'react-toastify';
-import { URL } from '../../assets/constants/url';
+import axios from 'axios';
+
+const {REACT_APP_SERVER_URL} = process.env;
 
 function Media(props) {
   const { data } = props;
@@ -35,12 +37,26 @@ Media.propTypes = {
 export default function ShowStatsGroup(props) {
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
-  const [showResults, setShowResults] = useState(false);
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (startDate < endDate) {
-      setShowResults(true);
+      const jwt = localStorage.getItem('session');
+      try {
+        const serverRes = await axios(`${REACT_APP_SERVER_URL}/stats/admin/global?startDateQuery=${startDate}&endDateQuery=${endDate}`, {method: 'GET', responseType: 'blob', headers: {
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
+        },});
+        const file = new Blob([serverRes.data], {type: 'application/pdf'});
+        const fileURL = window.URL.createObjectURL(file);
+        window.open(fileURL);
+      } catch (e) {
+        if (e.response.status === 401) {
+          localStorage.removeItem('session');
+          window.location.href = '/';
+        }
+      }
+
     } else {
       toast(
         <CustomToast title="Start date cannot be greater than end date!" />,
@@ -61,7 +77,6 @@ export default function ShowStatsGroup(props) {
               setStartDate(
                 moment(e.target.value, 'YYYY-MM-DDTHH:mm').toISOString(),
               );
-              setShowResults(false);
             }}
             InputLabelProps={{
               shrink: true,
@@ -78,7 +93,6 @@ export default function ShowStatsGroup(props) {
               setEndDate(
                 moment(e.target.value, 'YYYY-MM-DDTHH:mm').toISOString(),
               );
-              setShowResults(false);
             }}
             InputLabelProps={{
               shrink: true,
@@ -89,19 +103,6 @@ export default function ShowStatsGroup(props) {
           Search
         </Button>
       </form>
-      {showResults && (
-        <div className="a-container">
-          <a
-            className="view-results"
-            target="_blank"
-            rel="noreferrer"
-            href={`${URL}/stats/admin/global?startDateQuery=${startDate}&endDateQuery=${endDate}`}
-          >
-            See results
-          </a>
-        </div>
-      )}
-
       <br />
     </Container>
   );

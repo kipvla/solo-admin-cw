@@ -9,12 +9,12 @@ import {
   TableContainer,
   TableRow,
 } from '@material-ui/core';
-import { URL } from '../../assets/constants/url';
 import axios from 'axios';
 import CheckIcon from '../../assets/img/check-icon.ico';
 import CrossIcon from '../../assets/img/delete-icon.png';
 import './Topics.css';
 
+const {REACT_APP_SERVER_URL} = process.env;
 
 function Media(props) {
   const { data } = props;
@@ -49,7 +49,7 @@ export default function ShowTopics(props) {
         },
       };
       const res = await axios.get(
-        `${URL}/topic/admin/getTopicById/${id}`,
+        `${REACT_APP_SERVER_URL}/topic/admin/getTopicById/${id}`,
         authConfig,
       );
       setData(res.data);

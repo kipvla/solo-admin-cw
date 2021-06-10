@@ -1,5 +1,6 @@
 import axios from 'axios';
-import {URL} from '../assets/constants/url';
+
+const {REACT_APP_SERVER_URL} = process.env;
 
 const customFetch = (
   path,
@@ -11,7 +12,7 @@ const customFetch = (
     POST: async function () {
       try {
         const serverRes = await axios.post(
-          `${URL}/${path}`,
+          `${REACT_APP_SERVER_URL}/${path}`,
           JSON.stringify(body),
           config,
         );
@@ -22,7 +23,7 @@ const customFetch = (
     },
     GET: async function () {
       try {
-        const serverRes = await axios.get(`${URL}/${path}`, config);
+        const serverRes = await axios.get(`${REACT_APP_SERVER_URL}/${path}`, config);
         return {serverRes, error: false};
       } catch (e) {
         return {serverRes: e.response.data, error: true};

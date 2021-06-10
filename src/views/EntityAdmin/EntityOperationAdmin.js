@@ -13,13 +13,13 @@ import {
   TextField,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {URL} from '../../assets/constants/url';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import ImageUploader from 'react-images-upload';
 import CustomToast from '../../components/myComponents/custom-toast/index';
 import {toast} from 'react-toastify';
-
 import './Entity.css';
+
+const {REACT_APP_SERVER_URL} = process.env;
 
 function Reference(props) {
   const {field, updateData} = props;
@@ -68,7 +68,7 @@ export default function EntityOperationAdmin(props) {
         },
       };
   
-      const res = await axios.get(`${URL}/${queryGet}`, authConfig);
+      const res = await axios.get(`${REACT_APP_SERVER_URL}/${queryGet}`, authConfig);
       setEntityFields(res.data.keysLabel);
       setDisabled(false);
     } catch (err) {
@@ -98,7 +98,7 @@ export default function EntityOperationAdmin(props) {
       };
       const body = JSON.stringify(data);
       const res = await axios.post(
-        `${URL}/${queryPost}/${operation}`,
+        `${REACT_APP_SERVER_URL}/${queryPost}/${operation}`,
         body,
         authConfig,
       );

@@ -10,11 +10,12 @@ import {
   TextField,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {URL} from '../../assets/constants/url';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import ImageUploader from 'react-images-upload';
 import CustomToast from '../../components/myComponents/custom-toast/index';
 import {toast} from 'react-toastify';
+
+const {REACT_APP_SERVER_URL} = process.env;
 
 function Reference(props) {
   const {field, updateData, data} = props;
@@ -213,7 +214,7 @@ export default function Edit(props) {
       };
   
       const body = JSON.stringify(data);
-      const res = await axios.put(`${URL}/${queryEdit}`, body, authConfig);
+      const res = await axios.put(`${REACT_APP_SERVER_URL}/${queryEdit}`, body, authConfig);
       toast(<CustomToast title={res.data} />);
       history.goBack();
 

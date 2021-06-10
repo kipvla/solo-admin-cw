@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
-import { URL } from '../../assets/constants/url';
 import GridContainer from 'components/defaultComponents/Grid/GridContainer';
 import GridItem from 'components/defaultComponents/Grid/GridItem';
 import {
@@ -10,12 +9,13 @@ import {
   FormControl,
   TextField,
 } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import PropTypes from 'prop-types';
 import CheckIcon from '../../assets/img/check-icon.ico';
 import CrossIcon from '../../assets/img/delete-icon.png';
 import CustomToast from '../../components/myComponents/custom-toast';
 import { toast } from 'react-toastify';
+
+const {REACT_APP_SERVER_URL} = process.env;
 
 export default function EditTopics(props) {
   const { id } = props.match.params;
@@ -47,7 +47,7 @@ export default function EditTopics(props) {
         },
       };
       const res = await axios.get(
-        `${URL}/topic/admin/getTopicById/${id}`,
+        `${REACT_APP_SERVER_URL}/topic/admin/getTopicById/${id}`,
         authConfig,
       );
       setDisabled(false);
@@ -74,7 +74,7 @@ export default function EditTopics(props) {
       };
       const body = JSON.stringify({questions: topicQuestions, videoURL, description, name});
       const res = await axios.put(
-        `${URL}/topic/admin/edit/${id}`,
+        `${REACT_APP_SERVER_URL}/topic/admin/edit/${id}`,
         body,
         authConfig,
       );

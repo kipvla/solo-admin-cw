@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { URL } from '../../assets/constants/url';
 import GridContainer from 'components/defaultComponents/Grid/GridContainer';
 import GridItem from 'components/defaultComponents/Grid/GridItem';
 import {
@@ -20,6 +19,8 @@ import { DataGrid, GridToolbar } from '@material-ui/data-grid';
 import CustomToast from '../../components/myComponents/custom-toast';
 import { toast } from 'react-toastify';
 
+const {REACT_APP_SERVER_URL} = process.env;
+
 export default function ListTopics() {
   const [data, setData] = useState({});
   const [isDeleteModal, setIsDeleteModal] = useState(false);
@@ -37,7 +38,7 @@ export default function ListTopics() {
         },
       };
       const res = await axios.get(
-        `${URL}/topic/admin/getAllTopics`,
+        `${REACT_APP_SERVER_URL}/topic/admin/getAllTopics`,
         authConfig,
       );
       setIsLoading(false);
@@ -62,7 +63,7 @@ export default function ListTopics() {
         },
       };
       const res = await axios.delete(
-        `${URL}/topic/admin/delete/${id}`,
+        `${REACT_APP_SERVER_URL}/topic/admin/delete/${id}`,
         authConfig,
       );
       toast(<CustomToast title={res.data} />);
