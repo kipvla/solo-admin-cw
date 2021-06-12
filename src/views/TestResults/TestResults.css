@@ -1,0 +1,15 @@
+.question-number {
+  font-weight: bold;
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.choices {
+  padding: 10px;
+  margin-bottom: 5px;
+}

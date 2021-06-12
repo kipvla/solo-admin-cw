@@ -19,6 +19,8 @@ import TopicsList from '../views/Topics/ListTopics';
 import ShowTopics from '../views/Topics/ShowTopics';
 import PurchaseList from '../views/Purchases/ListPurchases';
 import ShowGlobalStats from '../views/GlobalStats/ShowGlobalStats';
+import TestResultsList from '../views/TestResults/ListTestResults';
+import ShowTestResults from '../views/TestResults/ShowTestResults.js';
 
 import Auth from './Auth';
 
@@ -116,6 +118,16 @@ export default function Admin({...rest}) {
               <Route
                 path="/admin/stats/global"
                 component={ShowGlobalStats}
+                exact
+              />
+              <Route
+                path="/admin/stats/testResults"
+                component={TestResultsList}
+                exact
+              />
+              <Route
+                path="/admin/show/testResults/:id"
+                component={ShowTestResults}
                 exact
               />
               <Route
