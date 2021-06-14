@@ -76,11 +76,10 @@ export default function Sidebar(props) {
 
   const Links = (
     <List className={classes.list}>
-      {CustomLink('/dashboard', 'Dashboard', Dashboard)}
-      <hr />
       <h6 style={{color: 'white', marginLeft: '15px', marginTop: '15px'}}>
         <b>ADMINISTRATION</b>
       </h6>
+      <hr/>
       <CustomMainLink clue="clients" label="Clients" />
       <Collapse in={openCollapse === 'clients'} timeout="auto" unmountOnExit>
         <List className={classes.list}>
