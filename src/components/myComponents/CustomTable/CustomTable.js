@@ -119,8 +119,7 @@ export default function CustomTable({
                 ? `/admin/show/${mongoID}/${queryByID}`
                 : `/admin/show/activity-children/${mongoID}`
             }
-            target="_blank"
-            rel="noopener noreferrer">
+          >
             <IconButton style={{padding: '7px'}}>
               <Visibility color="action" />
             </IconButton>
@@ -129,8 +128,7 @@ export default function CustomTable({
         {Boolean(data.tableOptions.edit) && (
           <Link
             to={`/admin/edit/${mongoID}/${queryByID}`}
-            target="_blank"
-            rel="noopener noreferrer">
+          >
             <IconButton style={{padding: '7px'}}>
               <Edit color="action" />
             </IconButton>
@@ -157,8 +155,7 @@ export default function CustomTable({
       <div>
         <Link
           to={`/admin/children/add-tutor/${mongoID}`}
-          target="_blank"
-          rel="noopener noreferrer">
+        >
           <IconButton style={{padding: '7px'}}>
             <AddCircle color="action" />
           </IconButton>
@@ -183,8 +180,7 @@ export default function CustomTable({
       <div>
         <Link
           to={`/admin/stats/child/${mongoID}/${childName}`}
-          target="_blank"
-          rel="noopener noreferrer">
+        >
           <IconButton style={{padding: '7px'}}>
             <Visibility color="action" />
           </IconButton>
